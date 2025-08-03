@@ -51,22 +51,23 @@ function Board({XisNext, squares, onPlay}){
 }
 
 export default function Game(){
-  const [XisNext, setXIsNext] = useState(true);
+  // const [XisNext, setXIsNext] = useState(true);
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
+  const XisNext = currentMove % 2 === 0; // Determine whose turn it is
   const currentSquares = history[currentMove];
 
   function handlePlay(nextSquares){
-    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]; // Create a new history array up to the current move
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
-    setCurrentMove(nextHistory.length - 1); // Update current move to the last move
+    setCurrentMove(nextHistory.length - 1);
     setXIsNext(!XisNext);
 
   }
 
   function jumpTo(nextMove){
     setCurrentMove(nextMove);
-    setXIsNext(nextMove % 2 === 0); 
+    // setXIsNext(nextMove % 2 === 0); // No need to set XisNext here, it will be recalculated
   }
   const moves = history.map((squares, move) => {
     let description;

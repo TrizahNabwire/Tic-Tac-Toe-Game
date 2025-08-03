@@ -53,20 +53,42 @@ function Board({XisNext, squares, onPlay}){
 export default function Game(){
   const [XisNext, setXIsNext] = useState(true);
   const [history, setHistory] = useState([Array(9).fill(null)]);
-  const currentSquares = history[history.length - 1];
+  const [currentMove, setCurrentMove] = useState(0);
+  const currentSquares = history[currentMove];
 
   function handlePlay(nextSquares){
-    setHistory([...history, nextSquares]);  // Create new array that contains all items in history
-    setXIsNext(!XisNext); // Toggle the next player
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]; // Create a new history array up to the current move
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1); // Update current move to the last move
+    setXIsNext(!XisNext);
 
   }
+
+  function jumpTo(nextMove){
+    setCurrentMove(nextMove);
+    setXIsNext(nextMove % 2 === 0); 
+  }
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0){
+      description = 'Go to move #' + move;
+    }
+    else{
+      description = 'Go to game start';
+    }
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  })
   return (
     <div className="game">
       <div className="game-board">
         <Board XisNext={XisNext} squares={currentSquares} onPlay={handlePlay}/>
       </div>
       <div className="game-info">
-        <ol>{}</ol>
+        <ol>{moves}</ol>
       </div>
     </div>
   );
